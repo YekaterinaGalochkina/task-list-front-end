@@ -11,8 +11,8 @@ const TaskList = ({ tasks, onToggleComplete, onDeleteTask }) => {
           id={task.id}
           title={task.title}
           isComplete={task.isComplete}
-          onToggleComplete={task.onToggleComplete}
-          onDeleteTask={task.onDeleteTask}
+          onToggleComplete={onToggleComplete}
+          onDeleteTask={onDeleteTask}
         />
       );
     });
