@@ -1,29 +1,42 @@
 import TaskList from './components/TaskList.jsx';
 import './App.css';
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
+const API_URL = 'http://127.0.0.1:5000';
 const App = () => {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: 'Mow the lawn',
-      isComplete: false,
-    },
-    {
-      id: 2,
-      title: 'Cook Pasta',
-      isComplete: true,
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(()=>{
+    axios.get(`${API_URL}/tasks`)
+      .then((response) =>{
+        setTasks(response.data);
+      })
+      .catch((error)=>{
+        console.error('Error fetching tasks:', error);
+      });
+  },[]);
 
   const toggleTaskComplete = (id) => {
-    const updatedTask = tasks.map(task => {
-      if (task.id === id) {
-        return { ...task, isComplete: !task.isComplete };
-      }
-      return task;
-    });
-    setTasks(updatedTask);
+    const endpoint = `${API_URL}/tasks/${id}`;
+    axios.put(endpoint)
+      .then(() => {
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === id ? { ...task, isComplete: !task.isComplete } : task
+          )
+        );
+      })
+      .catch((error) => {
+        console.error('Error updating task:', error);
+      });
+    // const updatedTask = tasks.map(task => {
+    //   if (task.id === id) {
+    //     return { ...task, isComplete: !task.isComplete };
+    //   }
+    //   return task;
+    // });
+    // setTasks(updatedTask);
   };
 
   const deleteTask = (id) => {
