@@ -17,31 +17,30 @@ const App = () => {
       });
   },[]);
 
-  const toggleTaskComplete = (id) => {
-    const endpoint = `${API_URL}/tasks/${id}`;
-    axios.put(endpoint)
+  const toggleTaskComplete = (id, markComplete) => {
+    const tail = !markComplete ? 'mark_complete' : 'mark_incomplete';
+    const endpoint = `${API_URL}/tasks/${id}/${tail}`;
+    axios.patch(endpoint)
       .then(() => {
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
-            task.id === id ? { ...task, isComplete: !task.isComplete } : task
+            task.id === id ? { ...task, is_complete: !task.is_complete } : task
           )
         );
       })
       .catch((error) => {
         console.error('Error updating task:', error);
       });
-    // const updatedTask = tasks.map(task => {
-    //   if (task.id === id) {
-    //     return { ...task, isComplete: !task.isComplete };
-    //   }
-    //   return task;
-    // });
-    // setTasks(updatedTask);
   };
 
   const deleteTask = (id) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
+    axios.delete(`${API_URL}/tasks/${id}`)
+      .then(() => {
+        setTasks((prev) => prev.filter((task) => task.id !== id));
+      })
+      .catch((error) => {
+        console.error('Error deleting task:', error);
+      });
   };
 
   return (
