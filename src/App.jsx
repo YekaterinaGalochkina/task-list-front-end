@@ -1,8 +1,8 @@
 import TaskList from './components/TaskList.jsx';
+import NewTaskForm from './components/NewTaskForm.jsx';
 import './App.css';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import NewTaskForm from './components/NewTaskForm.jsx';
 
 const API_URL = 'http://127.0.0.1:5000';
 const App = () => {
@@ -25,7 +25,7 @@ const App = () => {
       .then(() => {
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
-            task.id === id ? { ...task, is_complete: !task.is_complete } : task
+            task.id === id ? { ...task, 'is_complete': !task.is_complete } : task
           )
         );
       })
@@ -44,29 +44,20 @@ const App = () => {
       });
   };
 
-  // const postTask = (taskData) => {
-  //   return axios.post(`${API_URL}/tasks`, taskData);
-  // };
+  const addTask = ({ title, description }) => {
+    const newTask = {
+      title,
+      description
+    };
 
-  // Handler to add task, calls postTask and updates state
-  // const handleAddTask = (newTitle) => {
-  //   const newTaskData = {
-  //     title: newTitle,
-  //     "is_complete": false
-  //   };
-
-  //   postTask(newTaskData)
-  //     .then(response => {
-  //       const addedTask = {
-  //         ...response.data,
-  //         isComplete: response.data.is_complete
-  //       };
-  //       setTasks(prevTasks => [...prevTasks, addedTask]);
-  //     })
-  //     .catch(error => {
-  //       console.error("Error creating task:", error);
-  //     });
-  // };
+    axios.post(`${API_URL}/tasks`, newTask)
+      .then((response) => {
+        setTasks((prev) => [...prev, response.data.task]);
+      })
+      .catch((error) => {
+        console.error('Error creating task:', error);
+      });
+  };
 
   return (
     <div className="App">
@@ -74,12 +65,13 @@ const App = () => {
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <NewTaskForm onAddTask={handleAddTask}/>
         <div>{<TaskList
           tasks={tasks}
           onToggleComplete={toggleTaskComplete}
           onDeleteTask={deleteTask}
-        />}</div>
+        />}
+        <NewTaskForm onAddTask={addTask} />
+        </div>
       </main>
     </div>
   );
