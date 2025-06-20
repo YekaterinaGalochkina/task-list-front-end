@@ -2,6 +2,7 @@ import TaskList from './components/TaskList.jsx';
 import './App.css';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import NewTaskForm from './components/NewTaskForm.jsx';
 
 const API_URL = 'http://127.0.0.1:5000';
 const App = () => {
@@ -43,12 +44,37 @@ const App = () => {
       });
   };
 
+  // const postTask = (taskData) => {
+  //   return axios.post(`${API_URL}/tasks`, taskData);
+  // };
+
+  // Handler to add task, calls postTask and updates state
+  // const handleAddTask = (newTitle) => {
+  //   const newTaskData = {
+  //     title: newTitle,
+  //     "is_complete": false
+  //   };
+
+  //   postTask(newTaskData)
+  //     .then(response => {
+  //       const addedTask = {
+  //         ...response.data,
+  //         isComplete: response.data.is_complete
+  //       };
+  //       setTasks(prevTasks => [...prevTasks, addedTask]);
+  //     })
+  //     .catch(error => {
+  //       console.error("Error creating task:", error);
+  //     });
+  // };
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
+        <NewTaskForm onAddTask={handleAddTask}/>
         <div>{<TaskList
           tasks={tasks}
           onToggleComplete={toggleTaskComplete}
